@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Для тебе ❤</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F7D9DC; --bg2:#F2C4CB; --paper:#FFF6F7; --ink:#3A1426;
+  --wine:#8E1E3C; --wine-dark:#5E0F27; --gold:#F2B84B; --soft:#B5677D;
+  color-scheme: light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#2A0F1E; --bg2:#3A1529; --paper:#FFF1F3; --ink:#3A1426;
+    --wine:#C2325A; --wine-dark:#8E1E3C; --gold:#F2B84B; --soft:#E8A3B5;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#2A0F1E; --bg2:#3A1529; --paper:#FFF1F3; --ink:#3A1426;
+  --wine:#C2325A; --wine-dark:#8E1E3C; --gold:#F2B84B; --soft:#E8A3B5;
+  color-scheme: dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+button{touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-appearance:none;appearance:none}
+html,body{height:100%;margin:0}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  background:radial-gradient(120% 80% at 50% 0%, var(--bg2), var(--bg));
+  color:var(--soft);
+  font-family:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+  overflow:hidden;
+  -webkit-tap-highlight-color:transparent;
+}
+#hearts{position:fixed;inset:0;pointer-events:none;z-index:0}
+.screen{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:24px;text-align:center;
+  opacity:0;pointer-events:none;transition:opacity .6s ease;z-index:1;
+}
+.screen.on{opacity:1;pointer-events:auto}
+.hint{font-size:15px;letter-spacing:.02em;margin-top:28px;opacity:.85}
+
+/* Envelope */
+.env{position:relative;width:min(82vw,320px);aspect-ratio:1.5;cursor:pointer;border:0;background:none;padding:0}
+.env:focus-visible{outline:3px solid var(--gold);outline-offset:8px;border-radius:12px}
+.env-body{position:absolute;inset:0;background:var(--paper);border-radius:10px;
+  box-shadow:0 18px 40px -18px rgba(94,15,39,.55)}
+.env-body::before{content:"";position:absolute;inset:0;border-radius:10px;
+  background:linear-gradient(to top right, transparent 49.5%, #f1dce0 50%) left/50% 100% no-repeat,
+             linear-gradient(to top left, transparent 49.5%, #f1dce0 50%) right/50% 100% no-repeat}
+.flap{position:absolute;left:0;right:0;top:0;height:60%;transform-origin:top;
+  transition:transform .7s cubic-bezier(.6,.1,.3,1);z-index:3}
+.flap::before{content:"";position:absolute;inset:0;background:#f8e4e8;
+  clip-path:polygon(0 0,100% 0,50% 100%);border-radius:10px 10px 0 0}
+.seal{position:absolute;left:50%;top:60%;width:64px;height:64px;margin:-32px 0 0 -32px;z-index:4;
+  border-radius:50%;background:radial-gradient(circle at 35% 30%, var(--wine), var(--wine-dark));
+  display:grid;place-items:center;color:#fff;font-size:28px;
+  box-shadow:0 4px 10px rgba(0,0,0,.25), inset 0 -3px 6px rgba(0,0,0,.25);
+  transition:transform .5s ease, opacity .5s ease;animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.08)}}
+.env.open .flap{transform:rotateX(180deg);z-index:0}
+.env.open .seal{opacity:0;transform:scale(.3) rotate(-30deg);animation:none}
+.to{font-family:"Caveat",cursive;font-size:44px;color:var(--wine);margin:0 0 26px;line-height:1}
+
+/* Letter */
+.letter{
+  width:min(90vw,420px);max-height:78vh;overflow-y:auto;
+  background:var(--paper);color:var(--ink);border-radius:6px;
+  padding:30px 26px 26px;text-align:left;
+  box-shadow:0 24px 50px -24px rgba(94,15,39,.6);
+  background-image:repeating-linear-gradient(transparent 0 37px, #f0d3da 37px 38px);
+  background-position:0 22px;
+  transform:translateY(40px);transition:transform .8s cubic-bezier(.2,.8,.2,1);
+}
+#s2.on .letter{transform:none}
+.letter p{font-family:"Caveat",cursive;font-size:26px;line-height:38px;margin:0 0 0}
+.letter .sign{text-align:right;margin-top:10px;color:var(--wine)}
+.btn{
+  margin-top:22px;font:800 17px "Nunito",system-ui,sans-serif;
+  border:0;border-radius:999px;padding:14px 28px;cursor:pointer;
+  background:var(--wine);color:#fff;box-shadow:0 10px 24px -10px var(--wine-dark);
+  transition:transform .15s ease;
+}
+.btn:active{transform:scale(.95)}
+.btn:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.btn.ghost{background:var(--paper);color:var(--wine)}
+
+/* Reasons jar */
+.big-heart{width:190px;height:190px;border:0;background:none;cursor:pointer;padding:0;position:relative}
+.big-heart svg{width:100%;height:100%;filter:drop-shadow(0 14px 22px rgba(94,15,39,.45));transition:transform .2s ease}
+.big-heart:active svg{transform:scale(.9)}
+.big-heart:focus-visible{outline:3px solid var(--gold);outline-offset:6px;border-radius:50%}
+.count{position:absolute;inset:0;display:grid;place-items:center;padding-bottom:16px;
+  font:800 40px "Nunito",sans-serif;color:#fff}
+.reason{
+  min-height:120px;max-width:360px;margin:18px 0 0;
+  font-family:"Caveat",cursive;font-size:32px;line-height:1.2;color:var(--wine);
+}
+.reason.pop{animation:pop .45s ease}
+@keyframes pop{0%{opacity:0;transform:translateY(10px) scale(.96)}100%{opacity:1;transform:none}}
+.title{font-family:"Caveat",cursive;font-weight:700;font-size:42px;color:var(--wine);margin:0 0 18px;line-height:1.05}
+
+/* Question */
+.q-row{position:relative;width:100%;max-width:340px;height:150px;margin-top:10px}
+#yes{position:absolute;left:12%;top:40px}
+#no{position:absolute;right:12%;top:40px;transition:left .25s ease, top .25s ease}
+.final p{font-family:"Caveat",cursive;font-size:30px;color:var(--wine);max-width:340px;line-height:1.25;margin:10px 0 0}
+
+/* Password */
+.lock{font-size:54px;margin-bottom:6px}
+.dots{display:flex;gap:12px;justify-content:center;margin:6px 0 22px}
+.dots span{width:16px;height:16px;border-radius:50%;border:2px solid var(--wine);transition:background .15s}
+.dots span.f{background:var(--wine)}
+.dots.shake{animation:shake .4s}
+@keyframes shake{20%,60%{transform:translateX(-10px)}40%,80%{transform:translateX(10px)}}
+.pad{display:grid;grid-template-columns:repeat(3,72px);gap:14px;justify-content:center}
+.pad button{width:72px;height:72px;border-radius:50%;border:0;cursor:pointer;
+  background:var(--paper);color:var(--wine);font:800 26px "Nunito",sans-serif;
+  box-shadow:0 8px 18px -10px var(--wine-dark);transition:transform .1s}
+.pad button:active{transform:scale(.9)}
+.pad button:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.pad .empty{visibility:hidden}
+.err{min-height:22px;margin-top:14px;color:var(--wine);font-weight:600}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation:none !important;transition:none !important}
+}
+</style>
+</head>
+<body>
+<canvas id="hearts"></canvas>
+
+<!-- 0. Пароль -->
+<section class="screen on" id="s0" aria-label="Пароль">
+  <div class="lock" aria-hidden="true">🔒</div>
+  <h1 class="title">Тільки для тебе</h1>
+  <div class="dots" id="dots" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  <div class="pad" id="pad">
+    <button>1</button><button>2</button><button>3</button>
+    <button>4</button><button>5</button><button>6</button>
+    <button>7</button><button>8</button><button>9</button>
+    <button class="empty" tabindex="-1" aria-hidden="true"></button><button>0</button><button aria-label="Стерти" data-del>⌫</button>
+  </div>
+  <div class="err" id="err" aria-live="polite"></div>
+</section>
+
+<!-- 1. Конверт -->
+<section class="screen" id="s1" aria-label="Конверт">
+  <h1 class="to">Тобі, моя кохана</h1>
+  <button class="env" id="env" aria-label="Відкрити конверт">
+    <div class="env-body"></div>
+    <div class="flap"></div>
+    <div class="seal">❤</div>
+  </button>
+  <div class="hint">Торкнись печатки</div>
+</section>
+
+<!-- 2. Лист -->
+<section class="screen" id="s2" aria-label="Лист">
+  <div class="letter">
+    <p>Моя найрідніша,</p>
+    <p>я довго думав, як сказати це так, щоб ти відчула, а не просто прочитала.</p>
+    <p>Я кохаю тебе. Сильно. По-справжньому. Так, що вранці перша думка про тебе, а ввечері остання.</p>
+    <p>Коли ти поруч, усе стає простішим, теплішим і правильним. Ти мій дім, мій спокій і моя найкраща пригода.</p>
+    <p>Дякую, що ти є. Дякую, що ти моя.</p>
+    <p class="sign">Назавжди твій ❤</p>
+  </div>
+  <button class="btn" id="toReasons">Це ще не все</button>
+</section>
+
+<!-- 3. Причини -->
+<section class="screen" id="s3" aria-label="Причини">
+  <h2 class="title">За що я тебе кохаю</h2>
+  <button class="big-heart" id="heartBtn" aria-label="Показати наступну причину">
+    <svg viewBox="0 0 100 92" aria-hidden="true"><path fill="var(--wine)" d="M50 90C20 68 2 50 2 28 2 13 14 2 28 2c9 0 17 5 22 12C55 7 63 2 72 2c14 0 26 11 26 26 0 22-18 40-48 62z"/></svg>
+    <span class="count" id="count">?</span>
+  </button>
+  <div class="reason" id="reason" aria-live="polite">Тисни на серце</div>
+  <button class="btn ghost" id="toQ" style="visibility:hidden">Останнє питання</button>
+</section>
+
+<!-- 4. Питання -->
+<section class="screen" id="s4" aria-label="Питання">
+  <h2 class="title">А ти мене кохаєш?</h2>
+  <div class="q-row" id="qrow">
+    <button class="btn" id="yes">Так ❤</button>
+    <button class="btn ghost" id="no">Ні</button>
+  </div>
+</section>
+
+<!-- 5. Фінал -->
+<section class="screen final" id="s5" aria-label="Фінал">
+  <h2 class="title">Я знав ❤</h2>
+  <p>Я кохаю тебе більше, ніж уміють сказати слова. І щодня буду доводити це не словами.</p>
+  <button class="btn ghost" id="again">Відкрити ще раз</button>
+</section>
+
+<script>
+const reasons = [
+  "За твою усмішку, від якої в мене все тане",
+  "За те, як ти смієшся з моїх дурних жартів",
+  "За твої очі, в яких я щоразу гублюся",
+  "За те, що з тобою можна мовчати, і це не ніяково",
+  "За твою доброту, навіть коли ніхто не бачить",
+  "За те, що ти віриш у мене більше, ніж я сам",
+  "За наші розмови до ночі",
+  "За те, як ти пахнеш",
+  "За твої обійми, у яких зникають усі проблеми",
+  "За те, що ти справжня",
+  "За те, що поруч із тобою я кращий",
+  "Просто за те, що ти — це ти"
+];
+
+const $ = id => document.getElementById(id);
+function show(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));
+  $(id).classList.add("on");
+}
+
+/* Плаваючі сердечка */
+const cv = $("hearts"), ctx = cv.getContext("2d");
+let W,H, parts=[], bursts=[];
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+function size(){ W = cv.width = innerWidth*devicePixelRatio; H = cv.height = innerHeight*devicePixelRatio; }
+size(); addEventListener("resize", size);
+function heartPath(x,y,s){
+  ctx.beginPath();
+  ctx.moveTo(x, y+s*.3);
+  ctx.bezierCurveTo(x, y, x-s*.5, y, x-s*.5, y+s*.3);
+  ctx.bezierCurveTo(x-s*.5, y+s*.6, x, y+s*.8, x, y+s);
+  ctx.bezierCurveTo(x, y+s*.8, x+s*.5, y+s*.6, x+s*.5, y+s*.3);
+  ctx.bezierCurveTo(x+s*.5, y, x, y, x, y+s*.3);
+  ctx.fill();
+}
+function spawn(){
+  parts.push({x:Math.random()*W, y:H+20, s:(8+Math.random()*16)*devicePixelRatio,
+    v:(0.4+Math.random()*0.8)*devicePixelRatio, w:Math.random()*Math.PI*2, a:.25+Math.random()*.4});
+}
+function burst(n){
+  for(let i=0;i<n;i++){
+    const ang=Math.random()*Math.PI*2, sp=(3+Math.random()*7)*devicePixelRatio;
+    bursts.push({x:W/2,y:H/2,vx:Math.cos(ang)*sp,vy:Math.sin(ang)*sp-3*devicePixelRatio,
+      s:(10+Math.random()*18)*devicePixelRatio,life:1,c:Math.random()<.2?"#F2B84B":(Math.random()<.5?"#C2325A":"#E8A3B5")});
+  }
+}
+function tick(){
+  ctx.clearRect(0,0,W,H);
+  if(Math.random()<.06) spawn();
+  parts = parts.filter(p=>p.y>-40);
+  for(const p of parts){
+    p.y-=p.v; p.w+=.02;
+    ctx.globalAlpha=p.a; ctx.fillStyle="#E8A3B5";
+    heartPath(p.x+Math.sin(p.w)*20, p.y, p.s);
+  }
+  bursts = bursts.filter(b=>b.life>0);
+  for(const b of bursts){
+    b.x+=b.vx; b.y+=b.vy; b.vy+=.15*devicePixelRatio; b.life-=.012;
+    ctx.globalAlpha=Math.max(b.life,0); ctx.fillStyle=b.c;
+    heartPath(b.x,b.y,b.s);
+  }
+  ctx.globalAlpha=1;
+  requestAnimationFrame(tick);
+}
+if(!reduce) tick();
+
+function buzz(ms){ try{ navigator.vibrate && navigator.vibrate(ms); }catch(e){} }
+
+/* Telegram Mini App, якщо відкрито всередині Telegram */
+try{ if(window.Telegram && Telegram.WebApp){ Telegram.WebApp.ready(); Telegram.WebApp.expand(); } }catch(e){}
+
+/* Пароль */
+const PASS="100526"; let code="";
+const dotEls=[...document.querySelectorAll("#dots span")];
+function drawDots(){ dotEls.forEach((d,i)=>d.classList.toggle("f", i<code.length)); }
+$("pad").addEventListener("click", ev=>{
+  const b=ev.target.closest("button"); if(!b || b.classList.contains("empty")) return;
+  buzz(8);
+  if(b.hasAttribute("data-del")){ code=code.slice(0,-1); drawDots(); return; }
+  if(code.length>=6) return;
+  code+=b.textContent; drawDots(); $("err").textContent="";
+  if(code.length===6){
+    if(code===PASS){ burst(40); setTimeout(()=>show("s1"),350); }
+    else{
+      const d=$("dots"); d.classList.remove("shake"); void d.offsetWidth; d.classList.add("shake");
+      buzz([60,40,60]); $("err").textContent="Не той код. Спробуй ще 💕";
+      setTimeout(()=>{ code=""; drawDots(); },400);
+    }
+  }
+});
+
+/* 1 → 2 */
+$("env").addEventListener("click", ()=>{
+  const e=$("env"); if(e.classList.contains("open")) return;
+  e.classList.add("open"); buzz(30); burst(30);
+  setTimeout(()=>show("s2"), 900);
+});
+
+/* 2 → 3 */
+$("toReasons").addEventListener("click", ()=>show("s3"));
+
+/* Причини */
+let ri=0;
+$("heartBtn").addEventListener("click", ()=>{
+  const r=$("reason");
+  r.textContent = reasons[ri % reasons.length];
+  r.classList.remove("pop"); void r.offsetWidth; r.classList.add("pop");
+  $("count").textContent = (ri % reasons.length)+1;
+  ri++; buzz(15); burst(8);
+  if(ri>=4) $("toQ").style.visibility="visible";
+});
+$("toQ").addEventListener("click", ()=>show("s4"));
+
+/* Кнопка «Ні», яка тікає */
+const no=$("no"), row=$("qrow");
+const noTexts=["Ні","Точно?","Подумай ще","Не вийде 😏","Тисни «Так»"];
+let ni=0;
+function runAway(ev){
+  ev.preventDefault();
+  const rw=row.clientWidth, rh=row.clientHeight;
+  no.style.right="auto";
+  no.style.left = Math.random()*(rw-no.offsetWidth)+"px";
+  no.style.top  = Math.random()*(rh-no.offsetHeight)+"px";
+  ni=(ni+1)%noTexts.length; no.textContent=noTexts[ni];
+  const y=$("yes"); const sc=1+Math.min(ni,4)*.08; y.style.transform="scale("+sc+")";
+  buzz(10);
+}
+no.addEventListener("touchstart", runAway, {passive:false});
+no.addEventListener("mouseenter", runAway);
+no.addEventListener("click", runAway);
+
+$("yes").addEventListener("click", ()=>{
+  buzz([40,60,40]); burst(120); setTimeout(()=>burst(80),400);
+  show("s5");
+});
+
+$("again").addEventListener("click", ()=>{
+  $("env").classList.remove("open"); ri=0; ni=0;
+  $("reason").textContent="Тисни на серце"; $("count").textContent="?";
+  $("toQ").style.visibility="hidden"; no.textContent="Ні";
+  no.style.left=""; no.style.top=""; no.style.right=""; $("yes").style.transform="";
+  show("s1");
+});
+</script>
+</body>
+</html>
